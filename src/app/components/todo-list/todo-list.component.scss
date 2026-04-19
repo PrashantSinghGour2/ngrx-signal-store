@@ -1,0 +1,38 @@
+.todo-list {
+  margin: 2rem;
+
+  mat-form-field {
+    width: 400px; // Adjust this value as needed
+  }
+  
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  &__items {
+    mat-list-item {
+      height: auto !important;
+      padding: 0.5rem 0;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+
+      span {
+        flex: 1;
+      }
+
+      &__delete {
+        cursor: pointer;
+        color: rgb(255, 80, 80);
+        margin-left: auto;
+      }
+    }
+  }
+}
