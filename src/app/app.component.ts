@@ -34,6 +34,6 @@ export class AppComponent implements OnInit {
   }
 
   async loadTodos() {
-    await this.todoStore.loadAll();
+    this.todoStore.loadTodos({});
   }
 }
