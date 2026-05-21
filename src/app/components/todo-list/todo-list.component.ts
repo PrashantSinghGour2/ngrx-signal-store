@@ -7,7 +7,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgStyle } from '@angular/common';
-import { TodoService } from '../../services/todo.service';
 import { Todo, TodosFilter } from '../../model/todo.model';
 @Component({
   selector: 'todo-list',
@@ -69,8 +68,28 @@ import { Todo, TodosFilter } from '../../model/todo.model';
 export class TodoListComponent implements OnInit {
 
   isLoading = true;
-  todoService = inject(TodoService);
-  todos: Todo[] = [];
+  todos: Todo[] = [
+    {
+      id: '1',
+      title: 'Mock Todo 1',
+      completed: false
+    },
+    {
+      id: '2',
+      title: 'Mock Todo 2',
+      completed: false
+    },
+    {
+      id: '3',
+      title: 'Mock Todo 3',
+      completed: false
+    },
+    {
+      id: '4',
+      title: 'Mock Todo 4',
+      completed: false
+    }
+  ];
   filter = viewChild.required(MatButtonToggleGroup);
   cd: ChangeDetectorRef = inject(ChangeDetectorRef);
 
@@ -79,11 +98,9 @@ export class TodoListComponent implements OnInit {
   }
 
   async loadTodos() {
-    this.todos = await this.todoService.getTodos();
 
     this.isLoading = false;
     this.cd.detectChanges();
-    console.log('Todos loaded!', this.todos);
   }
 
   async onAddTodo(input: string) {
