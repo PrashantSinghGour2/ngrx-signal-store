@@ -3,7 +3,7 @@ import { Todo } from "../model/todo.model";
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { TodoService } from "../services/todo.service";
 export type TodosFilter = 'ALL' | 'COMPLETED' | 'PENDING';
-
+import { withDevtools } from '@angular-architects/ngrx-toolkit';
 type TodosState = {
   todos: Todo[];
   loading: boolean;
@@ -70,4 +70,5 @@ withComputed((state) => ({
         return todos;
     }
   })
-})));
+})), 
+withDevtools('TodosStore'));
