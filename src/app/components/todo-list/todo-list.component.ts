@@ -1,4 +1,4 @@
-import { Component, effect, inject, viewChild } from '@angular/core';
+import { ChangeDetectorRef, Component,inject, OnInit, viewChild } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -6,8 +6,9 @@ import { MatButtonToggleChange, MatButtonToggleGroup, MatButtonToggleModule } fr
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { TodosFilter, TodosStore } from '../../store/todo.store';
 import { NgStyle } from '@angular/common';
+import { TodoService } from '../../services/todo.service';
+import { Todo, TodosFilter } from '../../model/todo.model';
 @Component({
   selector: 'todo-list',
   standalone: true,
@@ -20,7 +21,7 @@ import { NgStyle } from '@angular/common';
     MatProgressSpinnerModule,
     MatCheckboxModule,
     NgStyle
-],
+  ],
   template: `
     <div class="todo-list">
       <p>Todo List</p>
@@ -39,14 +40,14 @@ import { NgStyle } from '@angular/common';
           <mat-button-toggle value="PENDING">Pending</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-      @if (todosStore.loading()) {
+      @if (isLoading) {
         <div class="todo-list__loading">
           <mat-spinner diameter="40" />
         </div>
       } @else {
         <div class="todo-list__items">
           <mat-list>
-            @for (todo of todosStore.filteredTodos(); track todo.id) {
+            @for (todo of todos; track todo.id) {
               <mat-list-item>
                 <div class="todo-item">
                   <mat-checkbox 
@@ -65,33 +66,41 @@ import { NgStyle } from '@angular/common';
   `,
   styleUrl: './todo-list.component.scss',
 })
-export class TodoListComponent {
-  
-  todosStore = inject(TodosStore);
-  filter = viewChild.required(MatButtonToggleGroup);
+export class TodoListComponent implements OnInit {
 
-  constructor() {
-    effect(() => {
-      const filter  = this.filter();
-      filter.value = this.todosStore.filter();
-    });
+  isLoading = true;
+  todoService = inject(TodoService);
+  todos: Todo[] = [];
+  filter = viewChild.required(MatButtonToggleGroup);
+  cd: ChangeDetectorRef = inject(ChangeDetectorRef);
+
+  ngOnInit(): void {
+    this.loadTodos();
+  }
+
+  async loadTodos() {
+    this.todos = await this.todoService.getTodos();
+
+    this.isLoading = false;
+    this.cd.detectChanges();
+    console.log('Todos loaded!', this.todos);
   }
 
   async onAddTodo(input: string) {
-    await this.todosStore.addTodo(input);
+
   }
 
   async onDeleteTodo(id: string, event: Event) {
+    // to avoid triggering parent click event when delete icon is clicked
     event.stopPropagation();
-    await this.todosStore.deleteTodo(id);
+
   }
 
   async onTodoToggled(id: string, completed: boolean) {
-    await this.todosStore.updateTodo(id, completed);
+
   }
 
   async onFilterTodos(event: MatButtonToggleChange) {
     const filter = event.value as TodosFilter;
-    await this.todosStore.updateFilter(filter);
   }
 }

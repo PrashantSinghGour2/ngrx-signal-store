@@ -3,3 +3,5 @@ export type Todo =  {
   title: string;
   completed: boolean;
 }
+
+export type TodosFilter = 'ALL' | 'COMPLETED' | 'PENDING';

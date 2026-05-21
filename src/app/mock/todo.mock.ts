@@ -18,7 +18,7 @@ export const MockTodos: Todo[]  = [
   },
   {
     id: '4',
-    title: 'Write Unit Tests',
+    title: 'Deploy',
     completed: false
   }
 ];
